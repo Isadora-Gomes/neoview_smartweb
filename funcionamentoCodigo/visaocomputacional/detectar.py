@@ -259,7 +259,9 @@ class Aplicacao: #a aplicacao em si, inicialização das coisas
                 opcao = input("--> ")
 
                 if opcao == "1":
-                    ret, frame = self.cap.read()
+                    for _ in range(5):  # descarta frames antigos para exibir a imagem atual detectada
+                        self.cap.grab()
+                        ret, frame = self.cap.read()
                     if not ret:
                         print("Erro ao capturar o frame da câmera")
                         continue
