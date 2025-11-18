@@ -9,37 +9,53 @@
 #define I2S_LRC 19
 #define I2S_DIN 23
 
-const char* ssid = "NEOVIEW";
-const char* password = "7RD2S1P5F8";
+const char *ssid = "NEOVIEW";
+const char *password = "7RD2S1P5F8";
 
 WebSocketsServer webSocket = WebSocketsServer(81);
 
-void webSocketEvent(uint8_t, WStype_t type, uint8_t* payload, size_t) {
-  if(type == WStype_CONNECTED){
-    Serial.println("Cliente conectado");
-    webSocket.sendTXT(0, "Teste");
-  }
-  else if(type == WStype_TEXT) {
-    String msg = String((char*)payload);
-    Serial.println("Mensagem recebida: " + msg);
-  }
+void webSocketEvent(uint8_t, WStype_t type, uint8_t *payload, size_t) {
+    int estadoBotaoP = digitalRead(botaoPiso);
+    int estadoBotaoA = digitalRead(botaoAmbiente);
+    int estadoBotaoL = digitalRead(botaoLeitura);
+
+    if (type == WStype_CONNECTED) {
+        Serial.println("Cliente conectado");
+        webSocket.sendTXT(0, "Teste");
+
+        if (estadoBotaoP == HIGH) {
+            webSocket.sendTXT(0, "PisoTatil");
+        }
+
+        if (estadoBotaoA == HIGH) {
+            webSocket.sendTXT(0, "Ambiente");
+        }
+
+        if (estadoBotaoL == HIGH) {
+            webSocket.sendTXT(0, "Leitura");
+        }
+    }
+    else if (type == WStype_TEXT) {
+        String msg = String((char *)payload);
+        Serial.println("Mensagem recebida: " + msg);
+    }
 }
 
 void setup() {
-  pinMode(botaoPiso, INPUT_PULLUP);
-  pinMode(botaoAmbiente, INPUT_PULLUP);
-  pinMode(botaoLeitura, INPUT_PULLUP);
+    pinMode(botaoPiso, INPUT_PULLUP);
+    pinMode(botaoAmbiente, INPUT_PULLUP);
+    pinMode(botaoLeitura, INPUT_PULLUP);
 
-  Serial.begin(115200);
+    Serial.begin(115200);
 
-  Serial.println("WebSocket iniciado");
+    Serial.println("WebSocket iniciado");
 
-  WiFi.softAP(ssid, password);
+    WiFi.softAP(ssid, password);
 
-  webSocket.begin();
-  webSocket.onEvent(webSocketEvent);
+    webSocket.begin();
+    webSocket.onEvent(webSocketEvent);
 }
 
 void loop() {
-  webSocket.loop();
+    webSocket.loop();
 }
