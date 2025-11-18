@@ -1,0 +1,6 @@
+[submodule "packages/flutter_tools"]
+	path = packages/flutter_tools
+	url = https://github.com/guilherme-paiva2007/flutter_tools
+[submodule "packages/dart_tools"]
+	path = packages/dart_tools
+	url = https://github.com/guilherme-paiva2007/dart_tools
