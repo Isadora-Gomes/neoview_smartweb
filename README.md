@@ -1,6 +1,4 @@
-## NEOVIEW
-
-# NeoView SmartWeb 
+# NeoView - SmartWeb 
 
 > Óculos inteligente para auxílio a pessoas com deficiência visual — integrando hardware e visão computacional para promover autonomia, segurança e inclusão social.
 
@@ -31,7 +29,7 @@ NeoView busca reduzir essas barreiras, promovendo maior inclusão social e auton
 
 ## Como rodar / configurar o projeto
 
-> ⚠️ Atenção: adapte os comandos abaixo conforme a estrutura real do seu projeto
+> Atenção: adapte os comandos abaixo conforme a estrutura real do seu projeto
 
 ```bash
 # Clone o repositório
@@ -47,4 +45,5 @@ make
 pip install -r requirements.txt
 
 # Execute a aplicação / firmware conforme instruções
+
 
