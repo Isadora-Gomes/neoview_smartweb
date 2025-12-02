@@ -29,21 +29,15 @@ NeoView busca reduzir essas barreiras, promovendo maior inclusão social e auton
 
 ## Como rodar / configurar o projeto
 
-> Atenção: adapte os comandos abaixo conforme a estrutura real do seu projeto
-
 ```bash
 # Clone o repositório
 git clone https://github.com/Isadora-Gomes/neoview_smartweb.git
 cd neoview_smartweb
 
-# Build / compile o código (caso use CMake ou sistema similar)
-mkdir build && cd build
-cmake ..
-make
-
 # (Se houver parte Python ou script) Instale dependências
 pip install -r requirements.txt
 
 # Execute a aplicação / firmware conforme instruções
+
 
 
