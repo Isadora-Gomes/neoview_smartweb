@@ -5,9 +5,9 @@
 #define botaoAmbiente 16
 #define botaoLeitura 17
 
-#define I2S_BCLK 18
-#define I2S_LRC 19
-#define I2S_DIN 23
+#define I2S_BCLK 26
+#define I2S_LRC 25
+#define I2S_DIN 22
 
 const char *ssid = "NEOVIEW";
 const char *password = "7RD2S1P5F8";

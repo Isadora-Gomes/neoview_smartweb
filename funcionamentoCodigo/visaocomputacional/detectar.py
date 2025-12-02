@@ -7,6 +7,7 @@ import io
 import warnings
 import time
 import numpy as np
+from funcionamentoCodigo.camera.camera import Camera
 
 warnings.simplefilter(action='ignore', category=FutureWarning) # ignora uns bagui de warning
 
@@ -246,9 +247,8 @@ class DetectorObjetos: #a funcionalidade do yolo msm pra identificar
 
 class Aplicacao: #a aplicacao em si, inicialização das coisas
     def __init__(self):
-        self.cap = cv2.VideoCapture(0)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        url = "http://192.168.1.12:81/stream"
+        self.camera = Camera(url)
         self.detector = DetectorObjetos()
 
     def executar(self): # menu com as opções
@@ -259,11 +259,10 @@ class Aplicacao: #a aplicacao em si, inicialização das coisas
                 opcao = input("--> ")
 
                 if opcao == "1":
-                    for _ in range(5):  # descarta frames antigos para exibir a imagem atual detectada
-                        self.cap.grab()
-                        ret, frame = self.cap.read()
-                    if not ret:
-                        print("Erro ao capturar o frame da câmera")
+                    try:
+                        frame = self.camera.ler_frame()
+                    except Exception as e:
+                        print("Erro ao capturar o frame da câmera:", e)
                         continue
 
                     contagem = self.detector.detectar(frame)
@@ -271,12 +270,17 @@ class Aplicacao: #a aplicacao em si, inicialização das coisas
 
                     print("---> " + frase)
                     Voz.falar(frase)
+
+                    cv2.imshow("ESP32-CAM", frame)
+
+                    if cv2.waitKey(1) & 0xFF == ord('q'):
+                        break
                 else:
                     print("Opção inválida, tente novamente!")
         finally:
-            self.cap.release()
+            self.camera.liberar()
             pygame.mixer.quit()
-
+            cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     app = Aplicacao()
