@@ -14,16 +14,16 @@ final class Pair extends Model<Pair> {
     }
   }
 
-  PairConnection connect() {
-    if (_current != null) {
-      throw Exception("A pair connection is already active.");
-    }
+  Future<Result<PairConnection, String>> connect() async => PairConnection._current == null
+    ? await PairConnection._connect(this)
+    : Failure("Conexão já existente");
 
-    currentNotifier.value = _current = PairConnection(this);
+  static List<Pair> statics = [
+    Pair(PartId(["neoview", "aa547cb0"]), name: "Óculos 1"),
+    Pair(PartId(["neoview", "a8b9c02d"]), name: "Óculos 2"),
+    Pair(PartId(["neoview", "ef650b12"]), name: "Óculos 3"),
+    Pair(PartId(["neoview", "d9812bce"]), name: "Óculos 4"),
+  ];
 
-    return _current = currentNotifier.value!;
-  }
-  
-  static PairConnection? _current;
-  static ValueNotifier<PairConnection?> get currentNotifier => ValueNotifier(_current);
+  static Pair? connected;
 }

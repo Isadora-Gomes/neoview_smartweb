@@ -1,21 +1,27 @@
 name: neoview
 description: "Aplicação móvel complementar ao dispositivo de visão computacional Óculos NeoView."
 publish_to: 'none'
-version: 1.0.0-alpha.2
+version: 1.0.0-betal.1
 
 environment:
-  sdk: ^3.9.2
+  sdk: ^3.10.0
 
 dependencies:
   flutter:
     sdk: flutter
   dart_tools:
-    path: packages/dart_tools
+    path: packages/flutter_tools/packages/dart_tools
   flutter_tools:
     path: packages/flutter_tools
   font_awesome_flutter: ^10.10.0
   flutter_svg: ^2.2.1
   provider: ^6.1.5+1
+  python_ffi: ^0.3.0
+  path: ^1.9.1
+  wifi_iot: ^0.3.19+2
+  wifi_scan: ^0.4.1+2
+  supabase_flutter: ^2.10.3
+  image_picker: ^1.2.1
 
 flutter_launcher_icons:
   android: true

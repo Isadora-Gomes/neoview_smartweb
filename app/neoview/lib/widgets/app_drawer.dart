@@ -3,6 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:neoview/core/constants/colors.dart';
 import 'package:neoview/core/constants/sizes.dart';
 import 'package:neoview/core/navigation.dart';
+import 'package:neoview/features/user.dart';
+import 'package:dart_tools/result.dart';
 import 'package:neoview/widgets/app_button.dart';
 import 'package:neoview/widgets/app_dialog.dart';
 
@@ -11,6 +13,8 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = UserService.currentUser;
+    
     return Drawer(
       semanticLabel: "Menu de navegação",
       shape: const RoundedRectangleBorder(
@@ -86,22 +90,47 @@ class AppDrawer extends StatelessWidget {
                         spacing: 8,
                         children: [
                           Container(
-                            decoration: const BoxDecoration(
-                              color: Color.fromARGB(255, 170, 170, 170),
+                            width: 64,
+                            height: 64,
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 170, 170, 170),
                               shape: BoxShape.circle,
                             ),
-                            padding: AppPaddings.medium,
-                            child: Center(child: const FaIcon(FontAwesomeIcons.solidUser, color: AppColors.black, size: 32,)),
+                            child: currentUser?.photo == true
+                              ? ClipOval(
+                                  child: Image.network(
+                                    currentUser!.photoUrl,
+                                    width: 64,
+                                    height: 64,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder: (context, child, loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return const Center(
+                                        child: CircularProgressIndicator(strokeWidth: 2),
+                                      );
+                                    },
+                                    errorBuilder: (context, error, stackTrace) => 
+                                      const Center(
+                                        child: FaIcon(FontAwesomeIcons.solidUser, color: AppColors.black, size: 32),
+                                      ),
+                                  ),
+                                )
+                              : const Center(
+                                  child: FaIcon(FontAwesomeIcons.solidUser, color: AppColors.black, size: 32),
+                                ),
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               ExcludeSemantics(
-                                child: Text("Usuário", style: const TextStyle(
-                                  color: AppColors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16
-                                ),),
+                                child: Text(
+                                  currentUser?.name ?? "Usuário", 
+                                  style: const TextStyle(
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16
+                                  ),
+                                ),
                               ),
                               Semantics(
                                 button: true,
@@ -167,7 +196,7 @@ void _logout(BuildContext context) {
         actions: [
           AppButton(
             small: true,
-            onClick: (context) => AppRoutes.login.resetTo(context),
+            onClick: (context) => _handleLogout(context),
             child: const Text("Sair")
           ),
           AppButton(
@@ -179,6 +208,31 @@ void _logout(BuildContext context) {
       );
     },
   );
+}
+
+Future<void> _handleLogout(BuildContext context) async {
+  Navigator.of(context).pop(); // Fechar dialog
+  
+  final result = await UserService.logout();
+  
+  switch (result) {
+    case Success<bool, String>():
+      if (context.mounted) {
+        AppRoutes.login.resetTo(context);
+      }
+      break;
+    case Failure<bool, String>():
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.failure),
+            backgroundColor: AppColors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+      break;
+  }
 }
 
 class _DrawerButton extends StatelessWidget {

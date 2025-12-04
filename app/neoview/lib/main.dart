@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neoview/core/constants/colors.dart';
 import 'package:neoview/core/navigation.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: "https://layidriheflvzduesifj.supabase.co",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxheWlkcmloZWZsdnpkdWVzaWZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NzEwMTksImV4cCI6MjA3ODQ0NzAxOX0.eERjkt1ATBghgst5jgY7Oa18_TVALnn5uNrO6jWxNks"
+  );
 
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 

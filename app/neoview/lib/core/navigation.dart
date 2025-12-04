@@ -169,7 +169,6 @@ class PopObserver extends NavigatorObserver {
 }
 
 void drawerNavigationStyler(bool isOpen) {
-  print("Drawer changed $isOpen");
   navigationStyle(
     statusBarBrightness: isOpen ? Brightness.light : null,
     navigationBarBrightness: isOpen ? Brightness.light : null,

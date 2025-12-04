@@ -34,10 +34,9 @@ NeoView busca reduzir essas barreiras, promovendo maior inclusão social e auton
 git clone https://github.com/Isadora-Gomes/neoview_smartweb.git
 cd neoview_smartweb
 
-# (Se houver parte Python ou script) Instale dependências
+# Para cada subfuncionalidade Python específica, é necessário ir ao diretório e instaar suas dependências
 pip install -r requirements.txt
 
-# Execute a aplicação / firmware conforme instruções
-
-
-
+# Para executar o aplicativo móvel, é necessário a instalação do Flutter SDK
+# É recomendado buildar em APK antes de usá-lo
+flutter build apk --release

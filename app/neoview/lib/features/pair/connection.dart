@@ -2,67 +2,36 @@ part of '../pair.dart';
 
 final class PairConnection extends ChangeNotifier with LimitedTimeUseClass {
   final Pair pair;
-  GlassesFunctionality? _currentFunction;
-  final Set<GlassesFunctionality> _secondaryFunctions = {};
 
-  GlassesFunctionality? get currentFunction => _currentFunction;
-  late final UnmodifiableSetView<GlassesFunctionality> secondaryFunctions;
+  static PairConnection? _current;
+
+  static Future<Result<PairConnection, String>>_connect(Pair pair) async {
+    throw UnimplementedError();
+  }
   
-  PairConnection(this.pair) {
+  PairConnection._(this.pair) {
     init();
-    secondaryFunctions = UnmodifiableSetView(_secondaryFunctions);
   }
 
-  void use(GlassesFunctionality function) {
-    if (_currentFunction == null) {
-      _currentFunction = function;
-      notifyListeners();
-    } else {
-      if (_currentFunction == function) return;
-      if (_currentFunction!.canUseWith.contains(function)) {
-        _secondaryFunctions.add(function);
-      } else {
-        throw Exception("Cannot use ${function.name} with ${_currentFunction!.name}");
-      }
-    }
-  }
-
-  void stop([GlassesFunctionality? function]) {
-    if (function == null) {
-      _currentFunction = null;
-      _secondaryFunctions.clear();
-    } else {
-      if (function == _currentFunction) {
-        _currentFunction = null;
-        _secondaryFunctions.clear();
-        return;
-      }
-      if (_secondaryFunctions.remove(function)) {
-        return;
-      }
-    }
+  Future<Result<void, String>> use(GlassesFunctionality function) async {
+    throw UnimplementedError();
   }
 
   @override
   void dispose() {
-    Pair._current = null;
-    Pair.currentNotifier.value = null;
+    _current = null;
     super.dispose();
   }
 }
 
-enum GlassesFunctionality {
-  tactileFloor(),
-  readText(),
-  gpsGuide(),
-  ambientDetection();
+enum GlassesFunctionality<T> {
+  tactileFloor("/floor", PythonServer._mapTactileFloor),
+  readText("/text-read", PythonServer._readText),
+  ambientDetection("/objects", PythonServer._readAmbient),
+  ping("/ping", PythonServer._ping);
 
-  static const Map<GlassesFunctionality, Set<GlassesFunctionality>> _canUseWithGroups = {
-    tactileFloor: { gpsGuide, ambientDetection },
-    readText: { },
-    gpsGuide: { tactileFloor, ambientDetection },
-    ambientDetection: { }
-  };
+  final String endpoint;
+  final Future<ServerResult> Function() call;
 
-  Set<GlassesFunctionality> get canUseWith => _canUseWithGroups[this]!;
+  const GlassesFunctionality(this.endpoint, this.call);
 }

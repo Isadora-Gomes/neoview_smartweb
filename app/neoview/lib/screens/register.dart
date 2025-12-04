@@ -6,6 +6,8 @@ import 'package:neoview/core/constants/colors.dart';
 import 'package:neoview/core/constants/rules.dart';
 import 'package:neoview/core/constants/sizes.dart';
 import 'package:neoview/core/navigation.dart';
+import 'package:neoview/features/user.dart';
+import 'package:dart_tools/result.dart';
 import 'package:neoview/widgets/app_button.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:neoview/widgets/app_inut.dart';
@@ -26,6 +28,7 @@ class _RegisterState extends State<Register> with WidgetsBindingObserver, Screen
   final InputEdittingController<String> passwordController = InputEdittingController("", AppRules.password);
 
   final FormValidator form = FormValidator();
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -55,6 +58,50 @@ class _RegisterState extends State<Register> with WidgetsBindingObserver, Screen
     navigationStyle(
       statusBarBrightness: Brightness.dark
     );
+  }
+
+  Future<void> _handleRegister(BuildContext context) async {
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final result = await UserService.register(
+      name: nameController.value,
+      email: emailController.value,
+      password: passwordController.value,
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    switch (result) {
+      case Success<User, String>():
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Conta criada com sucesso!'),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+          AppRoutes.home.resetTo(context);
+        }
+        break;
+      case Failure<User, String>():
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.failure),
+              backgroundColor: AppColors.red,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+        break;
+    }
   }
 
   @override
@@ -162,12 +209,19 @@ class _RegisterState extends State<Register> with WidgetsBindingObserver, Screen
                                     valueListenable: form,
                                     builder: (context, value, child) {
                                       return AppButton(
-                                        enabled: value,
-                                        hint: "Preencha todos os campos para selecionar",
-                                        onClick: (context) {
-                                          AppRoutes.home.resetTo(context);
-                                        },
-                                        child: const Text("Entrar")
+                                        enabled: value && !_isLoading,
+                                        hint: _isLoading ? "Carregando..." : "Preencha todos os campos para selecionar",
+                                        onClick: _handleRegister,
+                                        child: _isLoading 
+                                          ? const SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                color: AppColors.white,
+                                              ),
+                                            )
+                                          : const Text("Cadastrar")
                                       );
                                     }
                                   ),

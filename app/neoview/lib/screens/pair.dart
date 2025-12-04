@@ -6,18 +6,22 @@ import 'package:neoview/core/constants/styles.dart';
 import 'package:neoview/core/navigation.dart';
 import 'package:neoview/widgets/app_app_bar.dart';
 import 'package:neoview/widgets/app_button.dart';
-import 'package:neoview/widgets/app_dialog.dart';
 import 'package:neoview/widgets/app_drawer.dart';
 import 'package:neoview/widgets/underline_text.dart';
+import 'package:neoview/features/pair.dart' as model;
 
 class Pair extends StatefulWidget {
   const Pair({super.key});
 
   @override
   State<Pair> createState() => _PairState();
+
+  static _PairState _of(BuildContext context) => context.findAncestorStateOfType<_PairState>()!;
 }
 
 class _PairState extends State<Pair> {
+  void update(void Function() callback) => setState(callback);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,100 +32,107 @@ class _PairState extends State<Pair> {
         child: Padding(
           padding: AppPaddings.screen,
           child: Column(
-            spacing: 8,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 32,
             children: [
-              const UnderlineText("Conectar NeoView"),
-              const Text(
-                "Mantenha o óculos NeoView perto do seu celular e toque em ‘Conectar’ para iniciar o pareamento.",
-                style: AppTextStyles.mainText,
-              ),
               Column(
-                mainAxisSize: MainAxisSize.min,
                 spacing: 8,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  _NeoViewGlassesCard()
-                ],
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 8,
-                  children: [
-                    const Text(
-                      "Disparar funções",
-                      semanticsLabel: "Disparar funções do óculos",
-                      style: AppTextStyles.subtitle,
-                    ),
-                    Flexible(
-                      child: IntrinsicHeight(
-                        child: SingleChildScrollView(
-                          reverse: true,
-                          child: Column(
+                  const UnderlineText("Conectar NeoView"),
+                  const Text(
+                    "Mantenha o óculos NeoView perto do seu celular e toque em ‘Conectar’ para iniciar o pareamento.",
+                    style: AppTextStyles.mainText,
+                  ),
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             spacing: 8,
                             children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: AppButton(
-                                      onClick: (context) {
-                                        
-                                      },
-                                      child: const Text("Identificação de piso tátil")
+                              for (var pair in model.Pair.statics)
+                                SizedBox(
+                                  width: constraints.maxWidth,
+                                  child: _NeoViewGlassesCard(pair, constraints)
+                                ),
+                              ]
+                          ),
+                        );
+                      }
+                    ),
+                  ),
+                ],
+              ),
+              Flexible(
+                fit: FlexFit.tight,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 32.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 8,
+                    children: [
+                      const Text(
+                        "Disparar funções",
+                        semanticsLabel: "Disparar funções do óculos",
+                        style: AppTextStyles.subtitle,
+                      ),
+                      Expanded(
+                        child: IntrinsicHeight(
+                          child: SingleChildScrollView(
+                            // reverse: true,
+                            child: Column(
+                              spacing: 8,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: AppButton(
+                                        onClick: (context) {
+                                          
+                                        },
+                                        child: const Text("Identificação de piso tátil")
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: AppButton(
-                                      onClick: (context) {
-                                        
-                                      },
-                                      child: const Text("Detecção de ambiente")
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: AppButton(
+                                        onClick: (context) {
+                                          
+                                        },
+                                        child: const Text("Detecção de ambiente")
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: AppButton(
-                                      onClick: (context) {
-                                        
-                                      },
-                                      child: const Text("Leitura de textos")
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: AppButton(
+                                        onClick: (context) {
+                                          
+                                        },
+                                        child: const Text("Leitura de textos")
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: AppButton(
-                                      onClick: (context) {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => AppDialog(
-                                            title: "Modal",
-                                            body: Text("Modal"),
-                                            icon: FontAwesomeIcons.check,
-                                          ),
-                                        );
-                                      },
-                                      child: const Text("GPS inteligente")
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 )
               )
             ],
@@ -133,81 +144,95 @@ class _PairState extends State<Pair> {
 }
 
 class _NeoViewGlassesCard extends StatelessWidget {
-  const _NeoViewGlassesCard();
+  final model.Pair pair;
+  final BoxConstraints constraints;
+
+  const _NeoViewGlassesCard(this.pair, this.constraints);
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
       label: "Óculos NeoView não conectado",
       child: Container(
-        width: double.infinity,
         decoration: const BoxDecoration(
           border: Border.fromBorderSide(AppBorders.underline),
           borderRadius: AppBorderRadius.big
         ),
         padding: AppPaddings.big,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              flex: 4,
-              child: Image.asset("assets/images/photo_device_1.png"),
-            ),
-            Expanded(
-              flex: 6,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 12,
-                children: [
-                  Row(
-                    spacing: 8,
+            Row(
+              children: [
+                Flexible(
+                  fit: FlexFit.loose,
+                  flex: 4,
+                  child: Image.asset("assets/images/photo_device_1.png"),
+                ),
+                Flexible(
+                  fit: FlexFit.loose,
+                  flex: 6,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 12,
                     children: [
-                      Text("Óculos", semanticsLabel: "Nome: Óculos", style: AppTextStyles.subtitle,),
+                      Row(
+                        spacing: 8,
+                        children: [
+                          Text("Óculos", semanticsLabel: "Nome: Óculos", style: AppTextStyles.subtitle,),
+                          Semantics(
+                            label: "Editar nome",
+                            button: true,
+                            child: GestureDetector(
+                              onTap: () {
+                                
+                              },
+                              child: const FaIcon(FontAwesomeIcons.pencil, size: 24,),
+                            ),
+                          )
+                        ],
+                      ),
                       Semantics(
-                        label: "Editar nome",
+                        label: "Bateria em 100%",
+                        child: ExcludeSemantics(
+                          child: Row(
+                            spacing: 4,
+                            children: [
+                              const FaIcon(FontAwesomeIcons.batteryFull, color: Colors.lightGreenAccent, size: 20,),
+                              Text("100%", style: AppTextStyles.bold,),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Semantics(
+                        label: "Conectar ao óculos",
                         button: true,
                         child: GestureDetector(
                           onTap: () {
-                            
+                            Pair._of(context).update(() {
+                              if (pair == model.Pair.connected) {
+                                model.Pair.connected = null;
+                              } else {
+                                model.Pair.connected = pair;
+                              }
+                            },);
                           },
-                          child: const FaIcon(FontAwesomeIcons.pencil, size: 24,),
+                          child: ExcludeSemantics(
+                            child: Text(pair == model.Pair.connected ? "Desconectar" : "Conectar", style: const TextStyle(
+                              color: AppColors.blue,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold
+                            ),),
+                          ),
                         ),
                       )
                     ],
                   ),
-                  Semantics(
-                    label: "Bateria em 100%",
-                    child: ExcludeSemantics(
-                      child: Row(
-                        spacing: 4,
-                        children: [
-                          const FaIcon(FontAwesomeIcons.batteryFull, color: Colors.lightGreenAccent, size: 20,),
-                          Text("100%", style: AppTextStyles.bold,),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Semantics(
-                    label: "Conectar ao óculos",
-                    button: true,
-                    child: GestureDetector(
-                      onTap: () {
-                        
-                      },
-                      child: ExcludeSemantics(
-                        child: const Text("Conectar", style: TextStyle(
-                          color: AppColors.blue,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold
-                        ),),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            )
+                )
+              ],
+            ),
           ],
         ),
       ),
