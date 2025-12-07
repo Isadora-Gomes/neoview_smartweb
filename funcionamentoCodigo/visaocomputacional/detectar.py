@@ -22,21 +22,14 @@ class TraducaoEgenero:
             'airplane': 'avião', 'bus': 'ônibus', 'train': 'trem', 'truck': 'caminhão', 'boat': 'barco',
             'traffic light': 'semáforo', 'fire hydrant': 'hidrante', 'stop sign': 'placa de pare',
             'parking meter': 'parquímetro', 'bench': 'banco', 'bird': 'pássaro', 'cat': 'gato',
-            'dog': 'cachorro', 'horse': 'cavalo', 'sheep': 'ovelha', 'cow': 'vaca',
-            'elephant': 'elefante', 'bear': 'urso', 'zebra': 'zebra', 'giraffe': 'girafa',
-            'backpack': 'mochila', 'umbrella': 'guarda-chuva', 'handbag': 'bolsa', 'tie': 'gravata',
-            'suitcase': 'mala', 'bottle': 'garrafa', 'tv': 'televisão', 'laptop': 'notebook'
+            'dog': 'cachorro', 'horse': 'cavalo', 'sheep': 'ovelha', 'cow': 'vaca', 'bed': 'cama'
         }
-
         self.genero = {
             'person': 'f', 'bicycle': 'f', 'car': 'm', 'motorcycle': 'f',
             'airplane': 'm', 'bus': 'm', 'train': 'm', 'truck': 'm', 'boat': 'm',
             'traffic light': 'm', 'fire hydrant': 'm', 'stop sign': 'f',
             'parking meter': 'm', 'bench': 'm', 'bird': 'm', 'cat': 'm',
-            'dog': 'm', 'horse': 'm', 'sheep': 'f', 'cow': 'f', 'elephant': 'm',
-            'bear': 'm', 'zebra': 'f', 'giraffe': 'f', 'backpack': 'm',
-            'umbrella': 'm', 'handbag': 'f', 'tie': 'f', 'suitcase': 'f',
-            'bottle': 'f', 'tv': 'f', 'laptop': 'm'
+            'dog': 'm', 'horse': 'm', 'sheep': 'f', 'cow': 'f'
         }
 
     def traduzir(self, nome):
@@ -49,14 +42,20 @@ class TraducaoEgenero:
 class Voz:
     @staticmethod
     def falar(texto):
-        mp3_fp = io.BytesIO()
-        tts = gTTS(texto, lang='pt')
-        tts.write_to_fp(mp3_fp)
-        mp3_fp.seek(0)
-        pygame.mixer.music.load(mp3_fp, 'mp3')
-        pygame.mixer.music.play()
-        while pygame.mixer.music.get_busy():
-            time.sleep(0.1)
+        try:
+            if not pygame.mixer.get_init():
+                pygame.mixer.init()
+
+            mp3_fp = io.BytesIO()
+            tts = gTTS(texto, lang='pt-br')
+            tts.write_to_fp(mp3_fp)
+            mp3_fp.seek(0)
+            pygame.mixer.music.load(mp3_fp, 'mp3')
+            pygame.mixer.music.play()
+            while pygame.mixer.music.get_busy():
+                time.sleep(0.1)
+        except Exception as e:
+            print(f"Erro ao reproduzir áudio: {e}")
 
 
 class DetectorObjetos:
@@ -94,37 +93,25 @@ class DetectorObjetos:
 
 class Aplicacao:
     def __init__(self):
-        self.url = "http://192.168.1.13:81/stream"
+        self.url = "http://192.168.1.100:81/stream"
         self.detector = DetectorObjetos()
 
     def executar(self):
+        time.sleep(2)
         camera = Camera(self.url)
         try:
-            print("\n--- INICIANDO STREAM ---")
-            print("Pressione 1 para detectar objetos ou Esc para sair.")
-            while True:
-                try:
-                    frame = camera.ler_frame()
-                except Exception as e:
-                    print("Erro ao capturar o frame da câmera:", e)
-                    continue
-
-                cv2.imshow("ESP32-CAM", frame)
-                key = cv2.waitKey(1) & 0xFF
-
-                if key == ord('1'):
-                    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    frame_rgb = cv2.resize(frame_rgb, (640, 480))
-                    contagem, annotated = self.detector.detectar(frame_rgb)
-                    frase = self.detector.gerar_frase(contagem)
-                    print("---> " + frase)
-                    Voz.falar(frase)
-                    cv2.imshow("ESP32-CAM - Detecção", annotated)
-                elif key == 27:
-                    break
+            print("Executando detecção de objetos...")
+            frame = camera.ler_frame()
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame_rgb = cv2.resize(frame_rgb, (640, 480))
+            contagem, annotated = self.detector.detectar(frame_rgb)
+            frase = self.detector.gerar_frase(contagem)
+            print("---> " + frase)
+            Voz.falar(frase)
+            cv2.imshow("ESP32-CAM - Detecção", cv2.cvtColor(annotated, cv2.COLOR_RGB2BGR))
+            cv2.waitKey(2000)
         finally:
             camera.liberar()
-            pygame.mixer.quit()
             cv2.destroyAllWindows()
 
 

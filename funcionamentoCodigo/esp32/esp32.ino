@@ -13,6 +13,11 @@
 const char* ssid = "FAMILIA BRITO";
 const char* password = "febiel#2020";
 
+// ip fixo
+IPAddress local_IP(192, 168, 1, 101);
+IPAddress gateway(192, 168, 1, 1);
+IPAddress subnet(255, 255, 255, 0);
+
 WebSocketsServer webSocket = WebSocketsServer(8765);
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
@@ -37,8 +42,12 @@ void setup() {
   pinMode(botaoTexto, INPUT_PULLUP);
 
   Serial.begin(115200);
-  WiFi.begin(ssid, password);
 
+  if (!WiFi.config(local_IP, gateway, subnet)) {
+    Serial.println("Falha ao configurar IP fixo");
+  }
+
+  WiFi.begin(ssid, password);
   Serial.println("Conectando ao Wi-Fi...");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);

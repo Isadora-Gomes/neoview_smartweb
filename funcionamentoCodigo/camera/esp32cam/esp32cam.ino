@@ -1,9 +1,15 @@
 #include "esp_camera.h"
 #include <WiFi.h>
 
-// ==== CONFIG WiFi ====
 const char* ssid = "FAMILIA BRITO";
 const char* password = "febiel#2020";
+
+// definição de ip fixo
+IPAddress local_IP(192, 168, 1, 100);
+IPAddress gateway(192, 168, 1, 1);
+IPAddress subnet(255, 255, 255, 0);
+IPAddress primaryDNS(8, 8, 8, 8);
+IPAddress secondaryDNS(8, 8, 4, 4);
 
 #define CAMERA_MODEL_AI_THINKER
 #include "camera_pins.h"
@@ -12,6 +18,11 @@ void startCameraServer();
 
 void setup() {
   Serial.begin(115200);
+
+  if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
+    Serial.println("Falha ao configurar IP fixo");
+  }
+
   WiFi.begin(ssid, password);
   Serial.println("Conectando ao WiFi...");
   while (WiFi.status() != WL_CONNECTED) {
@@ -45,14 +56,14 @@ void setup() {
   config.pixel_format = PIXFORMAT_JPEG;
 
   if(psramFound()){
-  config.frame_size = FRAMESIZE_VGA;
-  config.jpeg_quality = 12; 
-  config.fb_count = 2;
-} else {
-  config.frame_size = FRAMESIZE_QVGA;
-  config.jpeg_quality = 15;
-  config.fb_count = 1;
-}
+    config.frame_size = FRAMESIZE_VGA;
+    config.jpeg_quality = 12; 
+    config.fb_count = 2;
+  } else {
+    config.frame_size = FRAMESIZE_QVGA;
+    config.jpeg_quality = 15;
+    config.fb_count = 1;
+  }
 
   esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK) {
@@ -63,7 +74,6 @@ void setup() {
   startCameraServer();
 
   sensor_t * s = esp_camera_sensor_get();
-
   s->set_vflip(s, 1);
 }
 

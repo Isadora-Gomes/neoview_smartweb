@@ -11,10 +11,14 @@ from funcionamentoCodigo.camera.camera import Camera
 warnings.simplefilter(action='ignore', category=FutureWarning)
 pygame.mixer.init()
 
+
 class Voz:
     @staticmethod
     def falar(texto):
         try:
+            if not pygame.mixer.get_init():
+                pygame.mixer.init()
+
             mp3_fp = io.BytesIO()
             tts = gTTS(texto, lang='pt-br')
             tts.write_to_fp(mp3_fp)
@@ -35,34 +39,27 @@ class LeitorTexto:
         textos = [res[1] for res in results]
         return " ".join(textos) if textos else "Nenhum texto encontrado"
 
+
 class Aplicacao:
     def __init__(self):
-        self.url = "http://192.168.1.13:81/stream"
+        self.url = "http://192.168.1.100:81/stream"
         self.leitor = LeitorTexto()
 
     def executar(self):
+        time.sleep(2)
         camera = Camera(self.url)
         try:
-            print("\n--- INICIANDO STREAM ---")
-            print("Pressione 1 para leitura de texto ou Esc para sair.")
-
-            while True:
-                frame = camera.ler_frame()
-                cv2.imshow("ESP32-CAM", frame)
-
-                key = cv2.waitKey(1) & 0xFF
-                if key == ord('1'):
-                    texto = self.leitor.ler_texto(frame)
-                    print("\nTexto detectado:", texto)
-                    if texto != "Nenhum texto encontrado":
-                        print("Reproduzindo áudio...")
-                        Voz.falar(texto)
-                elif key == 27:
-                    break
+            print("Executando leitura de texto...")
+            frame = camera.ler_frame()
+            texto = self.leitor.ler_texto(frame)
+            print("\nTexto detectado:", texto)
+            if texto != "Nenhum texto encontrado":
+                Voz.falar(texto)
+            cv2.imshow("ESP32-CAM - Leitura", frame)
+            cv2.waitKey(2000)
         finally:
             camera.liberar()
             cv2.destroyAllWindows()
-            pygame.mixer.quit()
 
 
 if __name__ == "__main__":

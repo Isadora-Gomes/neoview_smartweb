@@ -3,7 +3,7 @@ import asyncio
 from funcionamentoCodigo.visaocomputacional.detectar import Aplicacao as ModoObjetos
 from funcionamentoCodigo.visaocomputacional.leitura import Aplicacao as ModoTexto
 
-ESP32_IP = '192.168.1.14'
+ESP32_IP = '192.168.1.101'
 PORT = 8765
 
 modo_objetos = ModoObjetos()
