@@ -2,8 +2,8 @@
 #include <WiFi.h>
 
 // ==== CONFIG WiFi ====
-const char* ssid = "gab";
-const char* password = "123456789";
+const char* ssid = "FAMILIA BRITO";
+const char* password = "febiel#2020";
 
 #define CAMERA_MODEL_AI_THINKER
 #include "camera_pins.h"
@@ -45,11 +45,11 @@ void setup() {
   config.pixel_format = PIXFORMAT_JPEG;
 
   if(psramFound()){
-  config.frame_size = FRAMESIZE_QVGA;
+  config.frame_size = FRAMESIZE_VGA;
   config.jpeg_quality = 12; 
   config.fb_count = 2;
 } else {
-  config.frame_size = FRAMESIZE_QQVGA;
+  config.frame_size = FRAMESIZE_QVGA;
   config.jpeg_quality = 15;
   config.fb_count = 1;
 }
@@ -61,6 +61,10 @@ void setup() {
   }
 
   startCameraServer();
+
+  sensor_t * s = esp_camera_sensor_get();
+
+  s->set_vflip(s, 1);
 }
 
 void loop() {

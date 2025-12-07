@@ -1,61 +1,78 @@
-#include <WebSocketsServer.h>
 #include <WiFi.h>
+#include <WebSocketsServer.h>
 
-#define botaoPiso 4
-#define botaoAmbiente 16
-#define botaoLeitura 17
+#define botaoPiso   18
+#define botaoObjeto 19
+#define botaoTexto  23
 
-#define I2S_BCLK 26
-#define I2S_LRC 25
-#define I2S_DIN 22
+// pinos do módulo de aúdio
+// #define I2S_BCLK 26
+// #define I2S_LRC  25
+// #define I2S_DIN  22
 
-const char *ssid = "NEOVIEW";
-const char *password = "7RD2S1P5F8";
+const char* ssid = "FAMILIA BRITO";
+const char* password = "febiel#2020";
 
-WebSocketsServer webSocket = WebSocketsServer(81);
+WebSocketsServer webSocket = WebSocketsServer(8765);
 
-void webSocketEvent(uint8_t, WStype_t type, uint8_t *payload, size_t) {
-    int estadoBotaoP = digitalRead(botaoPiso);
-    int estadoBotaoA = digitalRead(botaoAmbiente);
-    int estadoBotaoL = digitalRead(botaoLeitura);
-
-    if (type == WStype_CONNECTED) {
-        Serial.println("Cliente conectado");
-        webSocket.sendTXT(0, "Teste");
-
-        if (estadoBotaoP == HIGH) {
-            webSocket.sendTXT(0, "PisoTatil");
-        }
-
-        if (estadoBotaoA == HIGH) {
-            webSocket.sendTXT(0, "Ambiente");
-        }
-
-        if (estadoBotaoL == HIGH) {
-            webSocket.sendTXT(0, "Leitura");
-        }
+void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
+  switch (type) {
+    case WStype_CONNECTED: {
+      IPAddress ip = webSocket.remoteIP(num);
+      Serial.printf("Cliente conectado: %d.%d.%d.%d\n", ip[0], ip[1], ip[2], ip[3]);
+      break;
     }
-    else if (type == WStype_TEXT) {
-        String msg = String((char *)payload);
-        Serial.println("Mensagem recebida: " + msg);
-    }
+    case WStype_DISCONNECTED:
+      Serial.printf("Cliente %u desconectado\n", num);
+      break;
+    case WStype_TEXT:
+      Serial.printf("Mensagem recebida: %s\n", payload);
+      break;
+  }
 }
 
 void setup() {
-    pinMode(botaoPiso, INPUT_PULLUP);
-    pinMode(botaoAmbiente, INPUT_PULLUP);
-    pinMode(botaoLeitura, INPUT_PULLUP);
+  pinMode(botaoPiso, INPUT_PULLUP);
+  pinMode(botaoObjeto, INPUT_PULLUP);
+  pinMode(botaoTexto, INPUT_PULLUP);
 
-    Serial.begin(115200);
+  Serial.begin(115200);
+  WiFi.begin(ssid, password);
 
-    Serial.println("WebSocket iniciado");
+  Serial.println("Conectando ao Wi-Fi...");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
 
-    WiFi.softAP(ssid, password);
+  Serial.println("\nWi-Fi conectado.");
+  Serial.print("IP ESP32: ");
+  Serial.println(WiFi.localIP());
 
-    webSocket.begin();
-    webSocket.onEvent(webSocketEvent);
+  webSocket.begin();
+  webSocket.onEvent(webSocketEvent);
+
+  Serial.println("Servidor WebSocket iniciado na porta 8765");
 }
 
 void loop() {
-    webSocket.loop();
+  webSocket.loop();
+
+  if (digitalRead(botaoPiso) == LOW) {
+    Serial.println("Enviando 'PISO'");
+    webSocket.broadcastTXT("PISO");
+    delay(500);
+  }
+
+  if (digitalRead(botaoObjeto) == LOW) {
+    Serial.println("Enviando 'OBJETO'");
+    webSocket.broadcastTXT("OBJETO");
+    delay(500);
+  }
+
+  if (digitalRead(botaoTexto) == LOW) {
+    Serial.println("Enviando 'TEXTO'");
+    webSocket.broadcastTXT("TEXTO");
+    delay(500);
+  }
 }

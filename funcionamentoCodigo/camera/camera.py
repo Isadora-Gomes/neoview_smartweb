@@ -5,6 +5,7 @@ class Camera:
     def __init__(self, url: str):
         self.url = url
         self.cap = cv2.VideoCapture(url)
+        time.sleep(2)
         if not self.cap.isOpened():
             raise Exception(f"Não foi possível abrir a câmera no URL: {url}")
         

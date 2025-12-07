@@ -6,14 +6,14 @@ import pygame
 import io
 import time
 import numpy as np
+from funcionamentoCodigo.camera.camera import Camera
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
-
 pygame.mixer.init()
 
 class Voz:
     @staticmethod
-    def falar(texto: str) -> None:
+    def falar(texto):
         try:
             mp3_fp = io.BytesIO()
             tts = gTTS(texto, lang='pt-br')
@@ -30,51 +30,37 @@ class LeitorTexto:
     def __init__(self, lang="pt"):
         self.reader = easyocr.Reader([lang], gpu=False)
 
-    def ler_texto(self, frame: np.ndarray) -> str:
+    def ler_texto(self, frame):
         results = self.reader.readtext(frame)
         textos = [res[1] for res in results]
         return " ".join(textos) if textos else "Nenhum texto encontrado"
 
 class Aplicacao:
     def __init__(self):
-        self.cap = cv2.VideoCapture(0)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        self.url = "http://192.168.1.13:81/stream"
         self.leitor = LeitorTexto()
 
-    def preview(self):
-        print("Pressione ESC para sair da pré-visualização")
-        while True:
-            ret, frame = self.cap.read()
-            if not ret:
-                break
-
-            cv2.imshow("Pré-visualização (ESC para sair)", frame)
-            if cv2.waitKey(1) & 0xFF == 27: 
-                break
-
-        cv2.destroyAllWindows()
-
     def executar(self):
+        camera = Camera(self.url)
         try:
+            print("\n--- INICIANDO STREAM ---")
+            print("Pressione 1 para leitura de texto ou Esc para sair.")
+
             while True:
-                print("\n--- MENU ---")
-                print("1 - Ler texto")
-                opcao = input("--> ")
+                frame = camera.ler_frame()
+                cv2.imshow("ESP32-CAM", frame)
 
-                if opcao == "1":
-                    ret, frame = self.cap.read()
-                    if ret:
-                        texto = self.leitor.ler_texto(frame)
-                        print("\nTexto detectado:", texto)
-                        if texto != "Nenhum texto encontrado":
-                            print("Reproduzindo áudio...")
-                            Voz.falar(texto)
-                        else:
-                            print("Nenhum texto para reproduzir em áudio.")
-
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord('1'):
+                    texto = self.leitor.ler_texto(frame)
+                    print("\nTexto detectado:", texto)
+                    if texto != "Nenhum texto encontrado":
+                        print("Reproduzindo áudio...")
+                        Voz.falar(texto)
+                elif key == 27:
+                    break
         finally:
-            self.cap.release()
+            camera.liberar()
             cv2.destroyAllWindows()
             pygame.mixer.quit()
 
