@@ -1,0 +1,13 @@
+# Dataset de Piso Tátil - Sistema de 5 Classes
+path: C:\Users\Lin\Documents\Python\neoview_piso\dataset_piso_tatil
+train: images/train
+val: images/val
+
+# Classes atualizadas
+nc: 5
+names: 
+  - 'piso_tatil_direcional'                        # Classe 0 - Direcional
+  - 'piso_tatil_alerta'            # Classe 1 - Alerta
+  - 'piso_tatil_direcional_vertical'                # Classe 2 - Vertical
+  - 'piso_tatil_direcional_horizontal'   # Classe 3 - Horizontal
+  - 'piso_tatil' # Classe 4 - Geral

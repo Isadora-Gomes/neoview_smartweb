@@ -1,0 +1,11 @@
+names:
+  0: piso_tatil_direcional
+  1: piso_tatil_alerta
+  2: piso_tatil_direcional_vertical
+  3: piso_tatil_direcional_horizontal
+  4: piso_tatil
+nc: 5
+path: C:\Users\tisen\Documents\Lin\Python\neoview_piso\dataset_piso_tatil
+test: images/test
+train: images/train
+val: images/train

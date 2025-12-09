@@ -1,0 +1,4 @@
+piso_tatil_direcional
+piso_tatil_alerta
+piso_tatil_direcional_vertical
+piso_tatil_direcional_horizontal

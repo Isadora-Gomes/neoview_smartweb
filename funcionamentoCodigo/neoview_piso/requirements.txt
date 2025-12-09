@@ -1,0 +1,34 @@
+# Dependências para o projeto de detecção de pisos táteis
+
+# Visão computacional e processamento de imagem
+opencv-python>=4.8.0
+numpy>=1.24.0
+pillow>=9.5.0
+
+# Machine Learning e Deep Learning
+ultralytics>=8.0.0  # Para YOLO
+torch>=2.0.0        # PyTorch (backend do YOLO)
+torchvision>=0.15.0
+scikit-learn>=1.3.0
+
+# Manipulação de dados
+pandas>=2.0.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+pyyaml>=6.0
+
+# Utilitários
+tqdm>=4.65.0        # Barras de progresso
+pathlib2>=2.3.7    # Compatibilidade com Path
+configparser>=5.3.0
+
+# Logging e debugging
+colorlog>=6.7.0     # Logs coloridos
+
+# Opcional: Aceleração GPU (descomente se necessário)
+# onnxruntime-gpu>=1.15.0  # Para inferência otimizada
+
+# Desenvolvimento (opcional)
+pytest>=7.4.0       # Testes
+black>=23.0.0       # Formatação de código
+flake8>=6.0.0       # Linting
