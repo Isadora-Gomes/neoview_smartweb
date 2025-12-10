@@ -10,25 +10,25 @@
 // #define I2S_LRC  25
 // #define I2S_DIN  22
 
-const char* ssid = "gab";
-const char* password = "12345678";
+const char* ssid = "FAMILIA BRITO";
+const char* password = "febiel#2020";
 
 // definição de ip fixo para redes de WiFi
 
-// IPAddress local_IP(192, 168, 1, 101);
-// IPAddress gateway(192, 168, 1, 1);
-// IPAddress subnet(255, 255, 255, 0);
-// IPAddress primaryDNS(8, 8, 8, 8);
-// IPAddress secondaryDNS(8, 8, 4, 4);
+IPAddress local_IP(192, 168, 1, 101);
+IPAddress gateway(192, 168, 1, 1);
+IPAddress subnet(255, 255, 255, 0);
+IPAddress primaryDNS(8, 8, 8, 8);
+IPAddress secondaryDNS(8, 8, 4, 4);
 
 
 // definição de ip fixo para redes de celular
 
-IPAddress local_IP(192, 168, 43, 101);
-IPAddress gateway(192, 168, 43, 1);
-IPAddress subnet(255, 255, 255, 0);
-IPAddress primaryDNS(8, 8, 8, 8);
-IPAddress secondaryDNS(8, 8, 4, 4);
+// IPAddress local_IP(192, 168, 43, 101);
+// IPAddress gateway(192, 168, 43, 1);
+// IPAddress subnet(255, 255, 255, 0);
+// IPAddress primaryDNS(8, 8, 8, 8);
+// IPAddress secondaryDNS(8, 8, 4, 4);
 
 WebSocketsServer webSocket = WebSocketsServer(8765);
 

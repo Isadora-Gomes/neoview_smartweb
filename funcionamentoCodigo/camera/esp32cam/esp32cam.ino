@@ -1,25 +1,25 @@
 #include "esp_camera.h"
 #include <WiFi.h>
 
-const char* ssid = "gab";
-const char* password = "12345678";
+const char* ssid = "FAMILIA BRITO";
+const char* password = "febiel#2020";
 
 // definição de ip fixo para redes de WiFi
 
-// IPAddress local_IP(192, 168, 1, 100);
-// IPAddress gateway(192, 168, 1, 1);
-// IPAddress subnet(255, 255, 255, 0);
-// IPAddress primaryDNS(8, 8, 8, 8);
-// IPAddress secondaryDNS(8, 8, 4, 4);
+IPAddress local_IP(192, 168, 1, 100);
+IPAddress gateway(192, 168, 1, 1);
+IPAddress subnet(255, 255, 255, 0);
+IPAddress primaryDNS(8, 8, 8, 8);
+IPAddress secondaryDNS(8, 8, 4, 4);
 
 
 // definição de ip fixo para redes de celular
 
-IPAddress local_IP(192, 168, 43, 100);
-IPAddress gateway(192, 168, 43, 1);
-IPAddress subnet(255, 255, 255, 0);
-IPAddress primaryDNS(8, 8, 8, 8);
-IPAddress secondaryDNS(8, 8, 4, 4);
+// IPAddress local_IP(192, 168, 43, 100);
+// IPAddress gateway(192, 168, 43, 1);
+// IPAddress subnet(255, 255, 255, 0);
+// IPAddress primaryDNS(8, 8, 8, 8);
+// IPAddress secondaryDNS(8, 8, 4, 4);
 
 #define CAMERA_MODEL_AI_THINKER
 #include "camera_pins.h"

@@ -4,7 +4,7 @@ from funcionamentoCodigo.visaocomputacional.detectar import Aplicacao as ModoObj
 from funcionamentoCodigo.visaocomputacional.leitura import Aplicacao as ModoTexto
 from funcionamentoCodigo.neoview_piso.aplicacao import Aplicacao as ModoPiso
 
-ESP32_IP = '192.168.43.101'
+ESP32_IP = '192.168.1.101'
 PORT = 8765
 
 modo_objetos = ModoObjetos()
