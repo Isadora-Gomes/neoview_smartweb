@@ -27,7 +27,7 @@ class Voz:
 
 class Aplicacao:
     def __init__(self):
-        self.url = "http://192.168.1.100:81/stream"
+        self.url = "http://192.168.43.100:81/stream"
         self.mapeador = PisoTatilDeteccao()
 
     def executar(self):
