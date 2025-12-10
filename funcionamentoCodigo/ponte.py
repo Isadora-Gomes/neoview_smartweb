@@ -13,27 +13,32 @@ modo_piso = ModoPiso()
 
 async def conectar_esp32():
     uri = f"ws://{ESP32_IP}:{PORT}"
-    print(f"Conectando ao servidor ESP32 em {uri}...")
+    print(f"\nConectando ao NeoView...")
 
     try:
         async with websockets.connect(uri) as websocket:
-            print("Conectado ao ESP32 via WebSocket.")
+            print("Conexão ao NeoView bem-sucedida.")
+
+            print("\nAguardando comando...\n")
 
             async for mensagem in websocket:
                 comando = mensagem.strip().upper()
                 print(f"Comando recebido: {comando}")
 
                 if comando == "OBJETO":
-                    print("Iniciando modo detecção de objetos...")
+                    print("Iniciando modo de detecção de objetos...")
                     modo_objetos.executar()
+                    print("\nAguardando comando...\n")
 
                 elif comando == "TEXTO":
-                    print("Iniciando modo leitura de texto...")
+                    print("Iniciando modo de leitura de texto...")
                     modo_texto.executar()
+                    print("\nAguardando comando...\n")
 
                 elif comando == "PISO":
                     print("Iniciando modo de mapeamento de piso...")
                     modo_piso.executar()
+                    print("\nAguardando comando...\n")
 
                 else:
                     print(f"Comando desconhecido: {comando}")

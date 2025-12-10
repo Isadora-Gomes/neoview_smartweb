@@ -109,7 +109,7 @@ class Aplicacao:
             print("---> " + frase)
             Voz.falar(frase)
             cv2.imshow("ESP32-CAM - Detecção", cv2.cvtColor(annotated, cv2.COLOR_RGB2BGR))
-            cv2.waitKey(2000)
+            cv2.waitKey(5000)
         finally:
             camera.liberar()
             cv2.destroyAllWindows()

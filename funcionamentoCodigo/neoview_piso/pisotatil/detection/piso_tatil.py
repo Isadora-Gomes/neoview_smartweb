@@ -47,13 +47,14 @@ class ParteLeituraMapa:
     def ler(self, index: Optional[int]) -> str:
         qnt_ramificacoes = len(self.subpartes)
         texto_ramificacoes: str = None
+        prefixo = "" if index is None else "sub-"
 
         if qnt_ramificacoes == 1:
-            texto_ramificacoes = f"possui 1 {"" if index is None else "sub-"}ramificação"
+            texto_ramificacoes = f"possui 1 {prefixo}ramificação"
         elif qnt_ramificacoes == 0:
-            texto_ramificacoes = f"não possui {"" if index is None else "sub-"}ramificações"
+            texto_ramificacoes = f"não possui {prefixo}ramificações"
         else:
-            texto_ramificacoes = f"possui {qnt_ramificacoes} {"" if index is None else "sub-"}ramificações"
+            texto_ramificacoes = f"possui {qnt_ramificacoes} {prefixo}ramificações"
 
         buffer = StringIO()
 

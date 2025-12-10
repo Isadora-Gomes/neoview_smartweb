@@ -1,4 +1,4 @@
-from pisotatil import *
+from .pisotatil import *
 import time
 from funcionamentoCodigo.camera.camera import Camera
 import cv2

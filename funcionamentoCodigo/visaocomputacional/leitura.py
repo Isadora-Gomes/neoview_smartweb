@@ -56,7 +56,7 @@ class Aplicacao:
             if texto != "Nenhum texto encontrado":
                 Voz.falar(texto)
             cv2.imshow("ESP32-CAM - Leitura", frame)
-            cv2.waitKey(2000)
+            cv2.waitKey(5000)
         finally:
             camera.liberar()
             cv2.destroyAllWindows()

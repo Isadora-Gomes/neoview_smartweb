@@ -1,1 +1,1 @@
-from pisotatil import *
+from .pisotatil import *
